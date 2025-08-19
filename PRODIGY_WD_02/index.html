@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      color: white;
+    }
+
+    .stopwatch {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .time {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .needle {
+      position: absolute;
+      width: 4px;
+      height: 120px;
+      background: red;
+      top: 30px;
+      left: 50%;
+      transform-origin: bottom center;
+      transform: rotate(0deg);
+      border-radius: 2px;
+    }
+
+    .controls {
+      margin-top: 25px;
+      display: flex;
+      gap: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      backdrop-filter: blur(5px);
+    }
+
+    button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .laps {
+      margin-top: 25px;
+      width: 280px;
+      max-height: 150px;
+      overflow-y: auto;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    .laps div {
+      padding: 5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      font-size: 1rem;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
+  <div class="stopwatch">
+    <div class="needle" id="needle"></div>
+    <div class="time" id="display">00:00:00</div>
+  </div>
+
+  <div class="controls">
+    <button onclick="start()">Start</button>
+    <button onclick="pause()">Pause</button>
+    <button onclick="lap()">Lap</button>
+    <button onclick="reset()">Reset</button>
+  </div>
+
+  <div class="laps" id="laps"></div>
+
+  <audio id="tick-sound" src="https://www.soundjay.com/clock/sounds/clock-ticking-1.mp3"></audio>
+
+  <script>
+    let startTime, updatedTime, difference = 0, timerInterval;
+    let isRunning = false;
+    const display = document.getElementById("display");
+    const needle = document.getElementById("needle");
+    const tickSound = document.getElementById("tick-sound");
+
+    function updateDisplay() {
+      updatedTime = new Date().getTime() - startTime + difference;
+      let hours = Math.floor((updatedTime / (1000 * 60 * 60)) % 24);
+      let minutes = Math.floor((updatedTime / (1000 * 60)) % 60);
+      let seconds = Math.floor((updatedTime / 1000) % 60);
+
+      display.innerHTML = 
+        (hours < 10 ? "0" : "") + hours + ":" + 
+        (minutes < 10 ? "0" : "") + minutes + ":" + 
+        (seconds < 10 ? "0" : "") + seconds;
+
+      // Rotate needle
+      let rotation = (seconds % 60) * 6; 
+      needle.style.transform = `rotate(${rotation}deg)`;
+    }
+
+    function start() {
+      if (!isRunning) {
+        startTime = new Date().getTime();
+        timerInterval = setInterval(updateDisplay, 1000);
+        tickSound.play();
+        tickSound.loop = true;
+        isRunning = true;
+      }
+    }
+
+    function pause() {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        difference += new Date().getTime() - startTime;
+        tickSound.pause(); // stop ticking
+        isRunning = false;
+      }
+    }
+
+    function reset() {
+      clearInterval(timerInterval);
+      display.innerHTML = "00:00:00";
+      needle.style.transform = "rotate(0deg)";
+      difference = 0;
+      tickSound.pause();
+      tickSound.currentTime = 0;
+      isRunning = false;
+      document.getElementById("laps").innerHTML = "";
+    }
+
+    function lap() {
+      if (isRunning) {
+        const laps = document.getElementById("laps");
+        const newLap = document.createElement("div");
+        newLap.textContent = display.innerHTML;
+        laps.appendChild(newLap);
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+      if (document.body.classList.contains("dark-mode")) {
+        document.body.style.background = "linear-gradient(135deg, #000000, #434343)";
+      } else {
+        document.body.style.background = "linear-gradient(135deg, #2c3e50, #3498db)";
+      }
+    }
+  </script>
+</body>
+</html>
