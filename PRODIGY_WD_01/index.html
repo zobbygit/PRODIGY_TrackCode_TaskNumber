@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Navbar with Scroll Background</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover;
+      transition: background 0.8s ease-in-out;
+      min-height: 100vh;
+      color: white;
+    }
+
+    
+    nav {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      background: rgba(228, 25, 18, 0.733);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      z-index: 1000;
+    }
+    nav.scrolled {
+      background: rgba(0,0,0,0.9);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.7rem;
+      font-weight: bold;
+      color: #e4a319;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .logo:hover { transform: scale(1.1); }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      font-size: 1rem;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .nav-links li a:hover {
+      background: #3b82f6;
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(59,130,246,0.5);
+    }
+
+    
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 5px;
+    }
+    .menu-toggle span {
+      height: 3px; width: 25px;
+      background: white; border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        position: absolute;
+        top: 65px; right: 0;
+        background: rgba(0,0,0,0.95);
+        flex-direction: column;
+        width: 220px;
+        height: 0; overflow: hidden;
+        transition: height 0.3s ease;
+      }
+      .nav-links.open { height: 260px; padding: 15px 0; }
+      .menu-toggle { display: flex; }
+    }
+
+    
+    .section {
+      display: none;
+      padding: 120px 20px;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      min-height: 100vh;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .section.active {
+      display: block;
+      opacity: 1;
+    }
+    #main { display: block; opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar">
+    <div class="nav-container">
+      <div class="logo" id="logo">Interactive Navbar</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#" data-section="home" data-bg="https://images.unsplash.com/photo-1507525428034-b723cf961d3e">Home</a></li>
+        <li><a href="#" data-section="services" data-bg="https://images.unsplash.com/photo-1506744038136-46273834b3fb">Services</a></li>
+        <li><a href="#" data-section="portfolio" data-bg="https://images.unsplash.com/photo-1503264116251-35a269479413">Portfolio</a></li>
+        <li><a href="#" data-section="about" data-bg="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0">About</a></li>
+        <li><a href="#" data-section="contact" data-bg="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d">Contact</a></li>
+      </ul>
+      <div class="menu-toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  
+  <div id="main" class="section active">
+    🌟 Welcome to the Main Landing Page <br><br>
+    Scroll down to see background change automatically!
+    <div style="height:150vh;"></div> <
+  </div>
+  <div id="home" class="section">🏠 This is the Home Page</div>
+  <div id="services" class="section">⚙️ Our Services Page</div>
+  <div id="portfolio" class="section">🖼️ Portfolio Showcase</div>
+  <div id="about" class="section">📖 About Us</div>
+  <div id="contact" class="section">📞 Contact Page</div>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    const sections = document.querySelectorAll('.section');
+    const links = document.querySelectorAll('.nav-links li a');
+    let inMainPage = true;
+
+    
+    window.addEventListener('scroll', function () {
+      if (window.scrollY > 50) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+
+     
+      if (inMainPage) {
+        if (window.scrollY < 200) {
+          document.body.style.background = "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover";
+        } else if (window.scrollY < 600) {
+          document.body.style.background = "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb') no-repeat center center/cover";
+        } else {
+          document.body.style.background = "url('https://images.unsplash.com/photo-1503264116251-35a269479413') no-repeat center center/cover";
+        }
+      }
+    });
+
+   
+    menuToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+   
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = e.target.getAttribute('data-section');
+        const bgUrl = e.target.getAttribute('data-bg');
+        alert(`${sectionId} page is clicked`);
+
+        inMainPage = false; 
+
+      
+        sections.forEach(sec => sec.classList.remove('active'));
+
+       
+        document.getElementById(sectionId).classList.add('active');
+
+      
+        document.body.style.background = `url('${bgUrl}') no-repeat center center/cover`;
+
+        navLinks.classList.remove('open');
+      });
+    });
+
+   
+    document.getElementById('logo').addEventListener('click', () => {
+      sections.forEach(sec => sec.classList.remove('active'));
+      document.getElementById('main').classList.add('active');
+      inMainPage = true;
+      document.body.style.background = "url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover";
+    });
+  </script>
+
+</body>
+</html>
