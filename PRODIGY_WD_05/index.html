@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>Weather Dashboard</h1>
+    <p>Check the weather for your location or any city in the world.</p>
+  </header>
+
+  <main>
+    <div class="weather-container">
+      <div class="search-box">
+        <input type="text" id="locationInput" placeholder="Enter city name">
+        <button id="searchBtn">Search</button>
+      </div>
+
+      <div class="weather-info" id="weatherInfo">
+        <h2 id="cityName">Weather</h2>
+        <p id="description"></p>
+        <p><strong>Temperature:</strong> <span id="temperature"></span>°C</p>
+        <p><strong>Humidity:</strong> <span id="humidity"></span>%</p>
+        <p><strong>Wind Speed:</strong> <span id="wind"></span> m/s</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Zohaib Aslam. All Rights Reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
